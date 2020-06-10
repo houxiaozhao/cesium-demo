@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./../echarts/echarts.js"></script>
+    <title>Document</title>
+    <style>
+      body {
+        background-color: #00000000;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body style="width: 400px; height: 150px;">
+    <div id="main" style="width: 400px; height: 150px;"></div>
+    <script>
+      var dataStyle = {
+        normal: {
+          label: {
+            show: false,
+          },
+          labelLine: {
+            show: false,
+          },
+          shadowBlur: 0,
+          shadowColor: '#203665',
+        },
+      };
+      option = {
+        backgroundColor: '#10173600',
+        series: [
+          {
+            name: '第一个圆环',
+            type: 'pie',
+            clockWise: false,
+            radius: [30, 35],
+            itemStyle: dataStyle,
+            hoverAnimation: false,
+            center: ['15%', '50%'],
+            data: [
+              {
+                value: 25,
+                label: {
+                  normal: {
+                    rich: {
+                      a: {
+                        color: '#3a7ad5',
+                        align: 'center',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                      },
+                      b: {
+                        color: '#fff',
+                        align: 'center',
+                        fontSize: 12,
+                      },
+                    },
+                    formatter: function (params) {
+                      return '{a|' + params.value + '个}';
+                    },
+                    position: 'center',
+                    show: true,
+                    textStyle: {
+                      fontSize: '12',
+                      fontWeight: 'normal',
+                      color: '#fff',
+                    },
+                  },
+                },
+                itemStyle: {
+                  normal: {
+                    color: '#2c6cc4',
+                    shadowColor: '#2c6cc4',
+                    shadowBlur: 0,
+                  },
+                },
+              },
+              {
+                value: 75,
+                name: 'invisible',
+                itemStyle: {
+                  normal: {
+                    color: '#24375c',
+                  },
+                  emphasis: {
+                    color: '#24375c',
+                  },
+                },
+              },
+            ],
+          },
+          {
+            name: '第二个圆环',
+            type: 'pie',
+            clockWise: false,
+            radius: [30, 35],
+            itemStyle: dataStyle,
+            hoverAnimation: false,
+            center: ['50%', '50%'],
+            data: [
+              {
+                value: 50,
+                label: {
+                  normal: {
+                    rich: {
+                      a: {
+                        color: '#d03e93',
+                        align: 'center',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                      },
+                      b: {
+                        color: '#fff',
+                        align: 'center',
+                        fontSize: 12,
+                      },
+                    },
+                    formatter: function (params) {
+                      return '{a|' + params.value + '个}';
+                    },
+                    position: 'center',
+                    show: true,
+                    textStyle: {
+                      fontSize: '14',
+                      fontWeight: 'normal',
+                      color: '#fff',
+                    },
+                  },
+                },
+                itemStyle: {
+                  normal: {
+                    color: '#ef45ac',
+                    shadowColor: '#ef45ac',
+                    shadowBlur: 0,
+                  },
+                },
+              },
+              {
+                value: 50,
+                name: 'invisible',
+                itemStyle: {
+                  normal: {
+                    color: '#412a4e',
+                  },
+                  emphasis: {
+                    color: '#412a4e',
+                  },
+                },
+              },
+            ],
+          },
+          {
+            name: '第三个圆环',
+            type: 'pie',
+            clockWise: false,
+            radius: [30, 35],
+            itemStyle: dataStyle,
+            hoverAnimation: false,
+            center: ['85%', '50%'],
+            data: [
+              {
+                value: 75,
+                label: {
+                  normal: {
+                    rich: {
+                      a: {
+                        color: '#603dd0',
+                        align: 'center',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                      },
+                      b: {
+                        color: '#fff',
+                        align: 'center',
+                        fontSize: 12,
+                      },
+                    },
+                    formatter: function (params) {
+                      return '{a|' + params.value + '个}';
+                    },
+                    position: 'center',
+                    show: true,
+                    textStyle: {
+                      fontSize: '14',
+                      fontWeight: 'normal',
+                      color: '#fff',
+                    },
+                  },
+                },
+                itemStyle: {
+                  normal: {
+                    color: '#613fd1',
+                    shadowColor: '#613fd1',
+                    shadowBlur: 0,
+                  },
+                },
+              },
+              {
+                value: 25,
+                name: 'invisible',
+                itemStyle: {
+                  normal: {
+                    color: '#453284',
+                  },
+                  emphasis: {
+                    color: '#453284',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      };
+      var myChart = echarts.init(document.getElementById('main'));
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

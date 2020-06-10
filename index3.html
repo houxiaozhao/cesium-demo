@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @import url(./node_modules/cesium/Build/CesiumUnminified/Widgets/widgets.css);
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="cesiumContainer" style="height: 100vh; width: 100%;"></div>
+    </div>
+    <script src="./vue/vue.js"></script>
+    <script src="./node_modules/cesium/Build/CesiumUnminified/Cesium.js"></script>
+    <script src="./lib/PolylineTrailLinkMaterialProperty.js"></script>
+    <script src="./lib/parabolaEquation.js"></script>
+    <script>
+        let viewer;
+        let curCanvas = 1
+        var app = new Vue({
+            el: '#app',
+            data: {
+                model: '3D'
+            },
+            watch: {
+            },
+            mounted() {
+                this.initMap();
+                var center = { lon: 116.46, lat: 39.598026044 }
+                let positions = [
+                    { name: '甘肃', geoCoord: [103.73, 36.03] },
+                    { name: '青海', geoCoord: [101.74, 36.56] },
+                    { name: '四川', geoCoord: [104.06, 30.67] },
+                    { name: '河北', geoCoord: [114.48, 38.03] },
+                    { name: '云南', geoCoord: [102.73, 25.04] },
+                    { name: '贵州', geoCoord: [106.71, 26.57] },
+                    { name: '湖北', geoCoord: [114.31, 30.52] },
+                    { name: '河南', geoCoord: [113.65, 34.76] },
+                    { name: '山东', geoCoord: [117, 36.65] },
+                    { name: '江苏', geoCoord: [118.78, 32.04] },
+                    { name: '安徽', geoCoord: [117.27, 31.86] },
+                    { name: '浙江', geoCoord: [120.19, 30.26] },
+                    { name: '江西', geoCoord: [115.89, 28.68] },
+                    { name: '福建', geoCoord: [119.3, 26.08] },
+                    { name: '广东', geoCoord: [113.23, 23.16] },
+                    { name: '湖南', geoCoord: [113, 28.21] },
+                    { name: '海南', geoCoord: [110.35, 20.02] },
+                    { name: '辽宁', geoCoord: [123.38, 41.8] },
+                    { name: '吉林', geoCoord: [125.35, 43.88] },
+                    { name: '黑龙江', geoCoord: [126.63, 45.75] },
+                    { name: '山西', geoCoord: [112.53, 37.87] },
+                    { name: '陕西', geoCoord: [108.95, 34.27] },
+                    { name: '台湾', geoCoord: [121.30, 25.03] },
+                    // 4直辖市
+                    { name: '北京', geoCoord: [116.46, 39.92] },
+                    { name: '上海', geoCoord: [121.48, 31.22] },
+                    { name: '重庆', geoCoord: [106.54, 29.59] },
+                    { name: '天津', geoCoord: [117.2, 39.13] },
+                    // 5自治区
+                    { name: '内蒙古', geoCoord: [111.65, 40.82] },
+                    { name: '广西', geoCoord: [108.33, 22.84] },
+                    { name: '西藏', geoCoord: [91.11, 29.97] },
+                    { name: '宁夏', geoCoord: [106.27, 38.47] },
+                    { name: '新疆', geoCoord: [87.68, 43.77] },
+                    // 2特别行政区
+                    { name: '香港', geoCoord: [114.17, 22.28] },
+                    { name: '澳门', geoCoord: [113.54, 22.19] }
+                ]
+                let material = new Cesium.PolylineTrailLinkMaterialProperty(Cesium.Color.DEEPSKYBLUE, 3000)
+                positions.forEach((e, i) => {
+                    var points = parabolaEquation({ pt1: center, pt2: { "lon": e.geoCoord[0], "lat": e.geoCoord[1] }, height: 500000, num: 100 });
+                    var pointArr = [];
+                    for (var i = 0; i < points.length; i++) {
+                        pointArr.push(points[i][0], points[i][1], points[i][2]);
+                    }
+                    viewer.entities.add({
+                        name: 'PolylineTrailLink',
+                        polyline: {
+                            positions: Cesium.Cartesian3.fromDegreesArrayHeights(pointArr),
+                            width: 2,
+                            material: material
+                        }
+                    });
+                    viewer.entities.add({
+                        position: Cesium.Cartesian3.fromDegrees(e.geoCoord[0], e.geoCoord[1], 1),
+                        point: {
+                            pixelSize: 2,
+                            color: Cesium.Color.RED
+                        }
+                    });
+                });
+                viewer.entities.add({
+                    position: Cesium.Cartesian3.fromDegrees(center.lon, center.lat, 1),
+                    point: {
+                        pixelSize: 2,
+                        color: Cesium.Color.BLUE
+                    }
+                });
+            },
+            methods: {
+                initMap() {
+                    var china = Cesium.Rectangle.fromDegrees(100, 10, 120, 70);
+                    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
+                    viewer = new Cesium.Viewer('cesiumContainer', {
+                        animation: false, //是否显示动画控件(左下方那个)
+                        baseLayerPicker: false, //是否显示图层选择控件
+                        geocoder: false, //是否显示地名查找控件
+                        timeline: false, //是否显示时间线控件
+                        sceneModePicker: false, //是否显示投影方式控件
+                        navigationHelpButton: false, //是否显示帮助信息控件
+                        infoBox: false, //是否显示点击要素之后显示的信息
+                        selectionIndicator: false,
+                        shadows: true,
+                        shouldAnimate: true,
+                        imageryProvider: new Cesium.SingleTileImageryProvider({
+                            url: './world.jpg'
+                        })
+                        // terrainProvider: Cesium.createWorldTerrain({
+                        //   requestWaterMask: true, // required for water effects
+                        //   requestVertexNormals: true, // required for terrain lighting
+                        // }),
+                    });
+                    viewer.scene.globe.enableLighting = true;
+                    viewer._cesiumWidget._creditContainer.style.display = 'none';
+                    viewer.scene.globe.depthTestAgainstTerrain = true;
+                    // var TDU_Key = 'da7e892e1fef8331a7b9372cc3ba4490'; //天地图申请的密钥
+                    // //在线天地图影像服务地址(墨卡托投影)
+                    // var TDT_IMG_W =
+                    //   'http://{s}.tianditu.gov.cn/img_w/wmts?service=wmts&request=GetTile&version=1.0.0' +
+                    //   '&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}' +
+                    //   '&style=default&format=tiles&tk=' +
+                    //   TDU_Key;
+                    // //在线天地图矢量地图服务(墨卡托投影)
+                    // var TDT_VEC_W =
+                    //   'http://{s}.tianditu.gov.cn/vec_w/wmts?service=wmts&request=GetTile&version=1.0.0' +
+                    //   '&LAYER=vec&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}' +
+                    //   '&style=default&format=tiles&tk=' +
+                    //   TDU_Key;
+                    // //在线天地图影像中文标记服务(墨卡托投影)
+                    // var TDT_CIA_W =
+                    //   'http://{s}.tianditu.gov.cn/cia_w/wmts?service=wmts&request=GetTile&version=1.0.0' +
+                    //   '&LAYER=cia&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}' +
+                    //   '&style=default.jpg&tk=' +
+                    //   TDU_Key;
+                    // //在线天地图矢量中文标记服务(墨卡托投影)
+                    // var TDT_CVA_W =
+                    //   'http://{s}.tianditu.gov.cn/cva_w/wmts?service=wmts&request=GetTile&version=1.0.0' +
+                    //   '&LAYER=cva&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}' +
+                    //   '&style=default.jpg&tk=' +
+                    //   TDU_Key;
+                    // let Img = new Cesium.WebMapTileServiceImageryProvider({
+                    //   //调用影响中文服务
+                    //   url: TDT_IMG_W, //url地址
+                    //   layer: 'img_w', //WMTS请求的层名称
+                    //   style: 'default', //WMTS请求的样式名称
+                    //   format: 'tiles', //MIME类型，用于从服务器检索图像
+                    //   tileMatrixSetID: 'GoogleMapsCompatible', //	用于WMTS请求的TileMatrixSet的标识符
+                    //   subdomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'], //天地图8个服务器
+                    //   minimumLevel: 0, //最小层级
+                    //   maximumLevel: 18, //最大层级
+                    // });
+
+                    // viewer.imageryLayers.addImageryProvider(Img); //添加到cesium图层上
+
+                    // let cia = new Cesium.WebMapTileServiceImageryProvider({
+                    //   //调用影响中文注记服务
+                    //   url: TDT_CIA_W,
+                    //   layer: 'cia_w',
+                    //   style: 'default',
+                    //   format: 'tiles',
+                    //   tileMatrixSetID: 'GoogleMapsCompatible',
+                    //   subdomains: ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'], //天地图8个服务器
+                    //   minimumLevel: 0,
+                    //   maximumLevel: 18,
+                    // });
+
+                    // viewer.imageryLayers.addImageryProvider(cia);
+                    // viewer.camera.lookAt(
+                    //     Cesium.Cartesian3.fromDegrees(103.492241, 34.704375),
+                    //     new Cesium.Cartesian3(0.0, -4790000.0, 3930000.0)
+                    // );
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>
